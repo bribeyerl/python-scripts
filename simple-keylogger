@@ -1,0 +1,25 @@
+import keyboard
+import sys
+
+def record_keys():
+    print("Recording keys... Press ENTER to stop.")
+    keys = keyboard.record(until='enter')
+    return keys
+
+def playback_keys(keys):
+    print("Playing back your recorded keys...")
+    keyboard.play(keys, speed_factor=1)
+
+def main():
+    try:
+        keys = record_keys()
+        playback_keys(keys)
+    except KeyboardInterrupt:
+        print("Script interrupted by user.")
+        sys.exit(0)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
