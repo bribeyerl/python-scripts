@@ -1,0 +1,42 @@
+import hashlib
+import sys
+
+# python hash_cracker.py <hash_value> <hash_type> <wordlist.txt>
+
+def hash_crack(target_hash, hash_type, wordlist_path):
+    try:
+        with open(wordlist_path, "r", encoding="utf-8", errors="ignore") as file:
+            words = file.readlines()
+    except FileNotFoundError:
+        print(f"❌ Wordlist file '{wordlist_path}' not found.")
+        sys.exit(1)
+
+    for word in words:
+        word = word.strip()
+        hashed_word = hashlib.new(hash_type)
+        hashed_word.update(word.encode('utf-8'))
+        if hashed_word.hexdigest() == target_hash:
+            print(f"✅ Hash cracked! The word is: '{word}'")
+            return
+
+    print("❌ Sorry, no match found.")
+
+def main():
+    if len(sys.argv) != 4:
+        print(f"Usage: python {sys.argv[0]} <hash_value> <hash_type> <wordlist.txt>")
+        sys.exit(1)
+
+    target_hash = sys.argv[1]
+    hash_type = sys.argv[2].lower()
+    wordlist_path = sys.argv[3]
+
+    supported_hashes = hashlib.algorithms_available
+
+    if hash_type not in supported_hashes:
+        print(f"❌ Unsupported hash type '{hash_type}'. Supported types: {supported_hashes}")
+        sys.exit(1)
+
+    hash_crack(target_hash, hash_type, wordlist_path)
+
+if __name__ == "__main__":
+    main()
